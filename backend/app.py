@@ -195,7 +195,7 @@ def create_document_from_json(json_obj, main_heading, img_path, doc_path):
       for list_item in json_obj[key]:
         document.add_paragraph(list_item, style='List Bullet')
 
-  document.add_picture(img_path, width=Inches(3.5))
+  document.add_picture(img_path, width=Inches(4.25))
 
   document.add_page_break()
 
