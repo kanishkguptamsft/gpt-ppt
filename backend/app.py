@@ -10,7 +10,6 @@ import os
 from azure.storage.blob import BlobServiceClient, BlobClient, ContainerClient
 
 
-openai.api_key = ''
 model_name = 'gpt-3.5-turbo'
 generic_prompt = """
 >>><input_text><<<
