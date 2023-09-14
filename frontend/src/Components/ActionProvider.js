@@ -1,5 +1,6 @@
 // in ActionProvider.jsx
 import React from 'react';
+import axios from "axios";
 
 const ActionProvider = ({ createChatBotMessage, setState, children }) => {
   const handleHello = () => {
@@ -11,18 +12,19 @@ const ActionProvider = ({ createChatBotMessage, setState, children }) => {
     }));
   };
 
-  const handleDog = () => {
-    const botMessage = createChatBotMessage(
-      "Here's a nicedde dog picture for you!",
-      {
+  const handleDog = (message) => {
+    axios.get('http://127.0.0.1:5000/gpt?text_input=' + message).then((response) => {
+      console.log(response.data['document']);
+      console.log(response.data['diagram']);
+      const botMessage = createChatBotMessage(response.data['document'], {
         widget: 'umlRenderer',
-      }
-    );
-
-    setState((prev) => ({
-      ...prev,
-      messages: [...prev.messages, botMessage],
-    }));
+        payload: response.data['diagram']
+      });
+      setState((prev) => ({
+        ...prev,
+        messages: [...prev.messages, botMessage],
+      }));
+    });
   };
 
   // Put the handleHello function in the actions object to pass to the MessageParser

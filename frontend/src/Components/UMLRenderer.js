@@ -13,7 +13,7 @@ import {
     useControls
   } from "react-zoom-pan-pinch";
 
-const UMLRenderer = () => {
+const UMLRenderer = (props) => {
   const Controls = () => {
       const { zoomIn, zoomOut, resetTransform } = useControls();
       return (
@@ -27,11 +27,13 @@ const UMLRenderer = () => {
   const [imageUrl, setImageUrl] = useState('');
 
   useEffect(() => {
-    fetch('https://dog.ceo/api/breeds/image/random')
-      .then((res) => res.json())
-      .then((data) => {
-        setImageUrl(data.message);
-      });
+    console.log(props.payload);
+    setImageUrl(props.payload);
+    // fetch('https://dog.ceo/api/breeds/image/random')
+    //   .then((res) => res.json())
+    //   .then((data) => {
+    //     setImageUrl('https://testingaci.blob.core.windows.net/hackchat/ndjljodxvk.png?sv=2022-11-02&ss=bfqt&srt=sco&sp=rwdlacupiytfx&se=2024-01-25T02%3A57%3A58Z&st=2023-09-13T18%3A57%3A58Z&spr=https&sig=66XZYbaPFUROK4CI%2BAWP1%2BRghH%2BsfQKawjlnLoiZS98%3D');
+    //   });
   }, []);
 
   return (
@@ -41,10 +43,10 @@ const UMLRenderer = () => {
       <TransformComponent>
         {/* need to just pass the url of the image obtained */}
         <img
-          src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80"
+          src={imageUrl}
           alt="test"
-          width="50%"
-          height="60%"
+          width="100%"
+          height="100%"
         />
       </TransformComponent>
     </TransformWrapper>
