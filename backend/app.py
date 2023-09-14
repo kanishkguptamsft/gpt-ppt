@@ -10,7 +10,7 @@ import os
 from azure.storage.blob import BlobServiceClient, BlobClient, ContainerClient
 
 
-openai.api_key = ''
+openai.api_key = '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'
 model_name = 'gpt-3.5-turbo'
 generic_prompt = """
 >>><input_text><<<
@@ -60,21 +60,23 @@ template_dict = {
 
 ======
 Intsuction prompt
+You are a design document generatror
 Read >>>CONTENT<<< and generate JSON in the below format
 {
 "DesignDoc": {
-  "Intent":,
-  "Pros",
-  "Cons",}.
+  "Intent": this should provide the intent of the design,
+  "Solution": this should go in detail of the solution proposed,
+  "Pros": what are the benefits and strengths of this approach,
+  "Cons": what are the disadvantages of the approach},
 "Diagram": this provides diagram of the content in plantuml output format
 }
 ======
-Please ensure that the output is in a perfect JSON format which can be serialized and deserialized.
+Ensure that the output is in a perfect JSON format which can be serialized and deserialized.
 ---
 Example
 
 User:I have a service A, which calls service B for sku info, and service C for OS info. Based on information from B and C, service A calls a method called pushConfig which takes sku and os as input. Based on sku and os, the pushConfig method sends a command to a device.
-Assistant: Here is the data you requested:
+Assistant:
 {
 "DesignDoc":{
   "Intent",
@@ -95,6 +97,7 @@ ServiceA -> Device : Send Command
 @enduml
 \"\"\"
 }
+---
 """,
 '2' : "1"
 }
@@ -185,7 +188,7 @@ def gpt():
     output_doc_blob_link = add_file_to_blob(doc_path, generate_random_string(10)+".docx", container_name)
     output_img_blob_link = add_file_to_blob(uml_img_file_path, generate_random_string(10)+".png", container_name)
     print(output_doc_blob_link)
-    response = {'document': output_doc_blob_link, 'diagram' : output_img_blob_link, 'input_text': text_input, 'output_gpt': output_gpt}
+    response = {'document': output_doc_blob_link, 'diagram' : output_img_blob_link, 'input_text': text_input, 'output_gpt': json_output_gpt}
     return jsonify(response)
 
 if __name__ == '__main__':

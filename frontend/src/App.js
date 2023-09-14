@@ -10,10 +10,8 @@ import config from './Components/config';
 
 
 function App() {
-
   return <Chatbot style={{innerHeight: "100%", outerHeight: "100%", }} config={config} actionProvider={ActionProvider}  messageParser={MessageParser}
         />;
-
 }
 
 export default App;
