@@ -53,6 +53,51 @@ ServiceA -> Device : Send Command
 \"\"\"
 }
 """
+
+template_dict = {
+   '1' : """
+>>><input_text><<<
+
+======
+Intsuction prompt
+Read >>>CONTENT<<< and generate JSON in the below format
+{
+"DesignDoc": {
+  "Intent":,
+  "Pros",
+  "Cons",}.
+"Diagram": this provides diagram of the content in plantuml output format
+}
+======
+Please ensure that the output is in a perfect JSON format which can be serialized and deserialized.
+---
+Example
+
+User:I have a service A, which calls service B for sku info, and service C for OS info. Based on information from B and C, service A calls a method called pushConfig which takes sku and os as input. Based on sku and os, the pushConfig method sends a command to a device.
+Assistant: Here is the data you requested:
+{
+"DesignDoc":{
+  "Intent",
+  "Solution",
+  "Pros",
+  "Cons"},
+"Diagram": \"\"\"
+@startuml
+actor User
+
+User -> ServiceA : Request SKU Info
+ServiceA -> ServiceB : Request SKU Info
+ServiceB -> ServiceA : Return SKU Info
+ServiceA -> ServiceC : Request OS Info
+ServiceC -> ServiceA : Return OS Info
+ServiceA -> Device : Send Command
+
+@enduml
+\"\"\"
+}
+""",
+'2' : "1"
+}
 uml_text_file_path = "C:\Hack23\ChatDesignDoc\plantUml.txt"
 uml_img_file_path = "C:\Hack23\ChatDesignDoc\plantUml.png"
 doc_path = 'C:\Hack23\ChatDesignDoc\chatgptdoc.docx'
@@ -61,10 +106,13 @@ container_name = 'hackchat'
 
 # Functions
 
-def replace_input_text(input_string, template=generic_prompt):
+def replace_input_text(input_string, template):
     return template.replace("<input_text>", input_string)
 
-def get_completion(template, input_text):
+def get_completion(template_enum, input_text):
+    if template_enum is None:
+        template_enum = "1"
+    template = template_dict[template_enum]
     input_text_in_template = replace_input_text(input_text, template)
     chat_completion = openai.ChatCompletion.create(model="gpt-3.5-turbo", messages=[{"role": "user", "content": input_text_in_template}])
     return chat_completion.choices[0].message.content
@@ -124,9 +172,10 @@ app = Flask(__name__)
 @app.route('/gpt', methods=['GET'])
 def gpt():
     text_input = request.args.get('text_input')
+    template_input = request.args.get('template', None)
     # text_input = "I have an application with interface IService. IService is implemented by multiple services in the application and is responsible for taking a json file input from a location provided by the caller and the output is a deserialized object of the json file. Write a design doc to extend the interface for a new service A. Use singleton to implement the same."
     # Add Open Ai Key before running get_completion.
-    output_gpt = get_completion(generic_prompt, text_input)
+    output_gpt = get_completion(template_input, text_input)
     # Below string is a sample output from GPT-3. This can be used to text other methods. Uncomment the below line and comment the above line for that.
     # output_gpt = '{\n\"DesignDoc\": {\n  \"Intent\": \"The intent of the design is to implement a chain of responsibility design pattern to handle different types of tasks based on specific requirements.\",\n  \"Pros\": [\n    \"Flexibility: The chain of responsibility design pattern allows adding or removing responsibilities dynamically at runtime.\",\n    \"Decoupling: The pattern decouples the sender and receiver of a request, allowing them to vary independently.\",\n    \"Simplification: It simplifies the client code by abstracting away the details of the handling logic and providing a unified interface.\"\n  ],\n  \"Cons\": [\n    \"Performance impact: The chain of responsibility may have performance implications as each handler needs to check if it can handle the request, potentially leading to multiple iterations.\",\n    \"Complexity: The pattern can introduce additional complexity, especially when the number of handlers increases, making it harder to maintain and debug.\"\n  ]\n},\n\"Diagram\": \"\"\"\n@startuml\nclass Client\n\ninterface ITaskHandler {\n  +handler()\n}\n\nclass AdditionTask {\n  +handler()\n}\n\nclass MultiplyTask {\n  +handler()\n}\n\nclass DivideTask {\n  +handler()\n}\n\nClient --> ITaskHandler\nITaskHandler <|- AdditionTask\nITaskHandler <|- MultiplyTask\nITaskHandler <|- DivideTask\n\n@enduml\n\"\"\"\n}'
     json_output_gpt = Convert_string_to_json(output_gpt)
