@@ -20,6 +20,7 @@ Intsuction prompt
 Read >>>CONTENT<<< and generate JSON in the below format
 {
 "DesignDoc": {
+  "Title":,
   "Intent":,
   "Solution",
   "Pros",
@@ -35,6 +36,7 @@ User:I have a service A, which calls service B for sku info, and service C for O
 Assistant: Here is the data you requested:
 {
 "DesignDoc":{
+  "Title":,
   "Intent",
   "Solution",
   "Pros",
@@ -191,6 +193,7 @@ def gpt():
     # Below string is a sample output from GPT-3. This can be used to text other methods. Uncomment the below line and comment the above line for that.
     # output_gpt = '{\n    \"DesignDoc\": {\n        \"Title\": \"Extend IService for Service A\",\n        \"Introduction\": \"This design document outlines the extension of the IService interface to support a new service A in the application. The goal is to allow Service A to take a JSON file input from a provided location and deserialize it into an object. The design will utilize the singleton pattern for implementation.\",\n        \"System Overview\": \"The software system consists of multiple services that implement the IService interface. These services are responsible for handling JSON file inputs and deserializing them into objects. The new service A will be added to the system, extending the existing IService interface.\",\n        \"Design Considerations\": \"Before adding the new service A, the design must consider the following issues: 1. How to ensure a single instance of the service is created and used throughout the application. 2. How to handle the JSON file input and deserialize it into an object. 3. How to provide flexibility for the caller to specify the location of the JSON file.\",\n        \"Assumptions and Dependencies\": \"The design assumes that the existing services implementing IService are functional and correctly handle JSON file inputs. The design also assumes that the caller will provide the location of the JSON file. The new service A depends on the existing IService interface and its implementation.\",\n        \"System Architecture\": \"The system architecture follows a modular approach, where each service implements the IService interface. The addition of service A will not significantly affect the overall organization of the system. Service A will be a singleton class that extends the IService interface.\",\n        \"Policies and Tactics\": \"The design policy for the new service A is to use the singleton pattern for implementation. This ensures that only one instance of the service is created and used throughout the application. The design tactic for handling JSON file inputs is to provide a parameter in the IService method for specifying the location of the JSON file.\",\n        \"Detailed System Design\": \"The implementation details of the new service A are as follows: 1. Create a new class called ServiceA that extends the IService interface. 2. Implement the IService method to take a parameter for the location of the JSON file. 3. Use the singleton pattern to ensure only one instance of the ServiceA class is created. 4. Inside the implementation of the IService method, read the JSON file from the specified location and deserialize it into an object. 5. Return the deserialized object as the output of the IService method.\",\n        \"Glossary\": \"IService - Interface implemented by multiple services in the application for handling JSON file inputs and deserialization. Service A - New service being added to the application, extending the IService interface. JSON file - A file containing data in the JSON format. Deserialization - The process of converting JSON data into a structured object representation.\"\n    },\n    \"Diagram\": \"\"\"\n    @startuml\n    IService <|.. ServiceA : extends\n    IUser <|-- ServiceA : implements\n\n    class ServiceA {\n        +getInstance(): ServiceA\n        +processJsonFile(location: string): Object\n    }\n    IUser <|-- ServiceB : implements\n    IUser <|-- ServiceC : implements\n\n    IUser <|.. ServiceB\n    IUser <|.. ServiceC\n\n    IUser <|.. ServiceN\n\n    IUser : Request JSON File\n    ServiceA : processJsonFile()\n    IUser : Receive Deserialized Object\n\n    @enduml\n    \"\"\"\n}'
     json_output_gpt = Convert_string_to_json(output_gpt)
+    print(json_output_gpt)
     write_file(json_output_gpt['Diagram'], uml_text_file_path)
     Create_plantUml_img(uml_text_file_path, uml_img_file_path)
     create_document_from_json(json_output_gpt['DesignDoc'], json_output_gpt['DesignDoc']['Title'], uml_img_file_path, doc_path)
