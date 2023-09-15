@@ -3,9 +3,9 @@ import axios from "axios";
 
 const ActionProvider = ({ createChatBotMessage, setState, children }) => {
   const handleInput = (message) => {
-    axios.get('http://127.0.0.1:5000/gpt?text_input=' + message).then((response) => {
-      console.log(response.data['output_gpt']);
-      const botMessage = createChatBotMessage(response.data['output_gpt']['DesignDoc']['Intent'], {
+    axios.get('http://127.0.0.1:5000/gpt?text_input=' + message+ '&template=2').then((response) => {
+      console.log(response.data);
+      const botMessage = createChatBotMessage(response.data['output_gpt']['DesignDoc']['Title'], {
         widget: 'umlRenderer',
         payload: {"diagram": response.data['diagram'],"document": response.data['document']}
       });
