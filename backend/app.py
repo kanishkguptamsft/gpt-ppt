@@ -21,6 +21,7 @@ Read >>>CONTENT<<< and generate JSON in the below format
 {
 "DesignDoc": {
   "Intent":,
+  "Solution",
   "Pros",
   "Cons",}.
 "Diagram": this provides diagram of the content in plantuml output format
@@ -84,10 +85,10 @@ Assistant: Here is the data you requested:
   "Title":,
   "Introduction",
   "System Overview",
-  "Design Considerations":,
+  "Design Considerations",
   "Assumptions and Dependencies",
   "System Architecture",
-  "Policies and Tactics":,
+  "Policies and Tactics",
   "Detailed System Design",
   "Glossary"},
 "Diagram": \"\"\"
@@ -122,6 +123,7 @@ def get_completion(template_enum, input_text):
         template_enum = "1"
     template = template_dict[template_enum]
     input_text_in_template = replace_input_text(input_text, template)
+    print(input_text_in_template)
     chat_completion = openai.ChatCompletion.create(model="gpt-3.5-turbo", messages=[{"role": "user", "content": input_text_in_template}])
     return chat_completion.choices[0].message.content
 
@@ -194,7 +196,7 @@ def gpt():
     create_document_from_json(json_output_gpt['DesignDoc'], json_output_gpt['DesignDoc']['Title'], uml_img_file_path, doc_path)
     output_doc_blob_link = add_file_to_blob(doc_path, generate_random_string(10)+".docx", container_name)
     output_img_blob_link = add_file_to_blob(uml_img_file_path, generate_random_string(10)+".png", container_name)
-    response = {'document': output_doc_blob_link, 'diagram' : output_img_blob_link, 'input_text': text_input, 'output_gpt': output_gpt}
+    response = {'document': output_doc_blob_link, 'diagram' : output_img_blob_link, 'input_text': text_input, 'output_gpt': json_output_gpt}
     return jsonify(response)
 
 if __name__ == '__main__':
