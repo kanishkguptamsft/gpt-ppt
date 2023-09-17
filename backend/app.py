@@ -181,10 +181,15 @@ def add_file_to_blob(file_path, blob_name, container_name):
 
 app = Flask(__name__)
 
+@app.route('/test', methods=['GET'])
+def test():
+    return jsonify({'message': 'success'})
+
 @app.route('/gpt', methods=['GET'])
 def gpt():
     text_input = request.args.get('text_input')
     template_input = request.args.get('template', None)
+    print(text_input)
     # text_input = "I have a complaint management, we are implementing a password based authentication of the user. The authentication be 2 factor, the first factor will be done by checking the password for the corresponding username in an azure cosmos db. The password passed will be encrypted. The second authentication will be done by producing a random produced at runtime otp, sending it to the user and verifying "
     # Add Open Ai Key before running get_completion.
     output_gpt = get_completion(template_input, text_input)
@@ -203,4 +208,4 @@ def gpt():
     return jsonify(response)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', debug=True)
